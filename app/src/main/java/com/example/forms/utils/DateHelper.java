@@ -31,7 +31,6 @@ public class DateHelper {
 
         DateFormat sdf = new SimpleDateFormat(dateFormat, locale);
         sdf.setLenient(false);
-        System.out.println(dateStr);
 
         try {
             sdf.parse(dateStr);

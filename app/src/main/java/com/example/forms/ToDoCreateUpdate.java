@@ -123,9 +123,14 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         datePicker.setOnClickListener(v -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                     (view, year, monthOfYear, dayOfMonth) -> {
-                        date.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                        monthOfYear++;
+                        String month = monthOfYear < 10 ? "0" + monthOfYear : "" + monthOfYear;
+                        String day = dayOfMonth < 10 ? "0" + dayOfMonth : "" + dayOfMonth;
+                        String yearString = String.valueOf(year).length() == 2 ? "20" + year : "" + year;
+
+                        date.setText(day + "/" + month + "/" + yearString);
                         mYear = year;
-                        mMonth = monthOfYear;
+                        mMonth = --monthOfYear;
                         mDay = dayOfMonth;
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
