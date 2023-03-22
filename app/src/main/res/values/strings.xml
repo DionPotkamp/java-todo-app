@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Todo</string>
+    <string name="add_todo">Add Todo</string>
+    <string name="create_new_todo">Create new Todo</string>
+    <string name="todo_title">Title</string>
+    <string name="todo_is_done">Is Done</string>
+    <string name="todo_due_date">Date</string>
+    <string name="todo_select_date">Select Date</string>
+    <string name="todo_due_time">Time</string>
+    <string name="todo_select_time">Select Time</string>
+    <string name="todo_description">Description</string>
+    <string name="todo_select_priority">Select Priority</string>
+    <string name="todo_priority">Priority</string>
+    <string name="todo_add_todo">Add ToDo</string>
+    <string name="todo_back">Back</string>
+    <string name="placeholder_title">Title</string>
+    <string name="priority">Priority</string>
+    <string name="placeholder_priority">High</string>
+    <string name="due_date">Due Date</string>
+    <string name="placeholder_due_date">00/00/00 @ 00:00</string>
+    <string name="description">Description</string>
+    <string name="placeholder_description">TextView</string>
+    <string name="delete_todo">Delete Todo</string>
+    <string name="is_done">Is Done</string>
 </resources>
