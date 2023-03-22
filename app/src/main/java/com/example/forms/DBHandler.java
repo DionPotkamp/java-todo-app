@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.forms.models.Todo;
 import com.example.forms.utils.DateHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // adapted from https://www.geeksforgeeks.org/how-to-create-and-add-data-to-sqlite-database-in-android/

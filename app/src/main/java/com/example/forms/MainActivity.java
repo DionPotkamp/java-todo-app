@@ -2,19 +2,17 @@ package com.example.forms;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
-import com.example.forms.adapters.TodoAdapter;
-import com.example.forms.models.Todo;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.forms.adapters.TodoAdapter;
 import com.example.forms.databinding.ActivityMainBinding;
+import com.example.forms.models.Todo;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
