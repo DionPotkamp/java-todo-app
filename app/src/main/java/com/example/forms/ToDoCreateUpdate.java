@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.example.forms.enums.Priority;
 import com.example.forms.models.Todo;
 import com.example.forms.utils.DateHelper;
 
@@ -42,7 +43,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
 
         // Adapted from https://stackoverflow.com/questions/13377361/how-to-use-enum-values-in-a-spinner
         // values from enum are used to populate the spinner/ dropdown
-        ArrayAdapter<Todo.Priority> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Todo.Priority.values());
+        ArrayAdapter<Priority> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Priority.values());
         prioritySpinner.setAdapter(adapter);
         prioritySpinner.setSelection(0); // High priority by default
 
@@ -87,7 +88,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
             Calendar dueDate = Calendar.getInstance();
             dueDate.set(mYear, mMonth, mDay, mHour, mMinute);
 
-            Todo.Priority priority = Todo.Priority.valueOf(prioritySpinner.getSelectedItem().toString());
+            Priority priority = Priority.valueOf(prioritySpinner.getSelectedItem().toString());
             Todo todo = new Todo(
                     titleText.getText().toString(),
                     descriptionText.getText().toString(),
