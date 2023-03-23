@@ -1,4 +1,4 @@
-package com.example.forms;
+package com.example.forms.utils;
 
 import static com.example.forms.MainActivity.todos;
 
@@ -14,7 +14,7 @@ import com.example.forms.utils.DateHelper;
 import java.util.List;
 
 // adapted from https://www.geeksforgeeks.org/how-to-create-and-add-data-to-sqlite-database-in-android/
-public class DBHandler extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
     // dictionary of columns
 //    private static final Map<String, String> ToDoApp = new HashMap<String, String>() {
 //        {
@@ -39,7 +39,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String DONE_COL = "isDone";
     private static final String[] ALL_COLS = {"*"};
 
-    public DBHandler(Context context) {
+    public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

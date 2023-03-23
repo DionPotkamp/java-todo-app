@@ -96,7 +96,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
                     isDoneSwitch.isChecked()
             );
 
-            MainActivity.dbHandler.addNewTodo(todo);
+            MainActivity.dbHelper.addNewTodo(todo);
             Toast.makeText(this, "Saved: " + todo.getTitle() + ", Due at: " + todo.getDateTime() + ", with priority: " + todo.getPriority(), Toast.LENGTH_LONG).show();
 
             // returning to main activity refreshes the list automatically (onResume)

@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.forms.adapters.TodoAdapter;
 import com.example.forms.databinding.ActivityMainBinding;
 import com.example.forms.models.Todo;
+import com.example.forms.utils.DBHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     RecyclerView recyclerview;
     SwipeRefreshLayout swipeRefreshLayout;
-    public static DBHandler dbHandler;
+    public static DBHelper dbHelper;
     public static List<Todo> todos = new ArrayList<>();
     public static final boolean DEBUG = true;
 
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dbHandler = new DBHandler(this);
+        dbHelper = new DBHelper(this);
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -56,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void refreshList() {
-        if (dbHandler == null) dbHandler = new DBHandler(this);
+        if (dbHelper == null) dbHelper = new DBHelper(this);
 
         todos.clear();
-        todos = dbHandler.getAllTodos();
+        todos = dbHelper.getAllTodos();
 
         TodoAdapter adapter = new TodoAdapter(todos);
         recyclerview.setAdapter(adapter);

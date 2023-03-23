@@ -60,7 +60,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
         // Get the data model based on position & make sure we have the latest data
         Todo t = todos.get(position);
-        Todo todo = MainActivity.dbHandler.getTodoById(t.getId());
+        Todo todo = MainActivity.dbHelper.getTodoById(t.getId());
 
         holder.todo_title.setText(todo.getTitle());
         String priority = todo.getPriority().toString();
@@ -117,7 +117,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
             isDone.setOnClickListener(view -> flipUpdateIsDone(isDone, position, todo));
 
             delete.setOnClickListener(view -> {
-                int amountDel = MainActivity.dbHandler.deleteTodo(todo);
+                int amountDel = MainActivity.dbHelper.deleteTodo(todo);
 
                 if (amountDel == 0) {
                     Toast.makeText(v.getContext(), "Failed to delete todo", Toast.LENGTH_LONG).show();
@@ -143,7 +143,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
     }
 
     private void flipUpdateIsDone(Button isDone, int position, Todo todo) {
-        MainActivity.dbHandler.updateTodo(todo.flipDone());
+        MainActivity.dbHelper.updateTodo(todo.flipDone());
         updateIsDoneButton(isDone, todo);
         notifyItemChanged(position);
     }
