@@ -46,19 +46,18 @@ public class DateHelper {
      */
     public static Calendar calendarFromString(String dateStr) {
         Calendar cal = Calendar.getInstance();
-        DateFormat sdf = new SimpleDateFormat(dateFormat, locale);
+        DateFormat simpleFormat = new SimpleDateFormat(dateFormat, locale);
 
         try {
-            cal.setTime(sdf.parse(dateStr));
+            cal.setTime(simpleFormat.parse(dateStr));
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not parse date string: " + dateStr);
         }
 
         return cal;
     }
 
     public static String stringFromCalendar(Calendar cal) {
-        DateFormat sdf = new SimpleDateFormat(dateFormat, locale);
-        return sdf.format(cal.getTime());
+        return new SimpleDateFormat(dateFormat, locale).format(cal.getTime());
     }
 }

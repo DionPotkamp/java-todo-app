@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Todo</string>
+    <string name="app_name">Dion\'s Todo App</string>
     <string name="add_todo">Add Todo</string>
     <string name="create_new_todo">Create new Todo</string>
     <string name="todo_title">Title</string>
@@ -11,7 +11,7 @@
     <string name="todo_description">Description</string>
     <string name="todo_select_priority">Select Priority</string>
     <string name="todo_priority">Priority</string>
-    <string name="todo_add_todo">Add ToDo</string>
+    <string name="todo_add_todo">Add Todo</string>
     <string name="todo_back">Back</string>
     <string name="placeholder_title">Title</string>
     <string name="priority">Priority</string>
