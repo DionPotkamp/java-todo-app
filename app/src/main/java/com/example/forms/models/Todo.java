@@ -154,7 +154,7 @@ public class Todo extends Model {
     public void setValuesFromCursor(Cursor cursor) {
         if (cursor == null) return;
         if (cursor.getCount() == 0) return;
-        if (cursor.getColumnCount() != COLUMNS.length) return;
+        if (cursor.getColumnCount() != dbColumns.length) return;
         if (cursor.isAfterLast()) return;
         if (cursor.isBeforeFirst()) cursor.moveToFirst();
 

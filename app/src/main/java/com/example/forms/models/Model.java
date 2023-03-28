@@ -16,8 +16,8 @@ import java.util.List;
  * @author Dion Potkamp
  */
 public abstract class Model implements Cloneable {
-    public final String TABLE;
-    public final String[] COLUMNS;
+    public final String dbTable;
+    public final String[] dbColumns;
     public int id = -1;
 
     /**
@@ -37,9 +37,15 @@ public abstract class Model implements Cloneable {
      */
     public abstract Model clone();
 
+    /**
+     * @param table Name of table in database
+     * @param columns Names of columns in database
+     */
     public Model(String table, String[] columns) {
-        TABLE = table;
-        COLUMNS = columns;
+        // Setting table and columns could be done in constructor of child class
+        // But this way it's enforced to set the table and columns
+        dbTable = table;
+        dbColumns = columns;
     }
 
     /**
@@ -49,10 +55,11 @@ public abstract class Model implements Cloneable {
      * @return id of created row
      */
     public int create() {
+        // Remove id from values, because id is auto incremented
         ContentValues values = getContentValues();
         values.remove("id");
 
-        id = dbControl.insert(TABLE, values);
+        id = dbControl.insert(dbTable, values);
         return id;
     }
 
@@ -63,10 +70,11 @@ public abstract class Model implements Cloneable {
      */
     public int update() {
         ContentValues values = getContentValues();
-        String id = values.get("id").toString();
-        String[] whereArgs = new String[]{id};
+        String[] whereArgs = new String[]{values.getAsString("id")};
+        // Remove id from values, because it cannot be updated
+        values.remove("id");
 
-        return dbControl.update(TABLE, values, "id=?", whereArgs);
+        return dbControl.update(dbTable, values, "id=?", whereArgs);
     }
 
     /**
@@ -76,9 +84,9 @@ public abstract class Model implements Cloneable {
      */
     public int delete() {
         ContentValues values = getContentValues();
-        String id = values.get("id").toString();
+        String id = values.getAsString("id");
 
-        return dbControl.delete(TABLE, "id=?", new String[]{id});
+        return dbControl.delete(dbTable, "id=?", new String[]{id});
     }
 
     /**
@@ -105,7 +113,7 @@ public abstract class Model implements Cloneable {
      */
     public Cursor read() {
         String[] selectionArgs = new String[]{String.valueOf(id)};
-        return dbControl.select(TABLE, COLUMNS, "id=?", selectionArgs, null, null, null);
+        return dbControl.select(dbTable, dbColumns, "id=?", selectionArgs, null, null, null);
     }
 
     /**
@@ -115,7 +123,7 @@ public abstract class Model implements Cloneable {
      */
     public <E extends Model> E get() {
         String[] selectionArgs = new String[]{String.valueOf(id)};
-        Cursor cursor = dbControl.select(TABLE, COLUMNS, "id=?", selectionArgs, null, null, null);
+        Cursor cursor = dbControl.select(dbTable, dbColumns, "id=?", selectionArgs, null, null, null);
 
         if (cursor.moveToFirst()) {
             setValuesFromCursor(cursor);
@@ -133,7 +141,7 @@ public abstract class Model implements Cloneable {
      * @return List with all models of type E which extends Model
      */
     public <E extends Model> List<E> getAll() {
-        Cursor cursor = dbControl.select(TABLE, COLUMNS, null, null, null, null, null);
+        Cursor cursor = dbControl.select(dbTable, dbColumns, null, null, null, null, null);
 
         List<E> list = new ArrayList<>();
 
