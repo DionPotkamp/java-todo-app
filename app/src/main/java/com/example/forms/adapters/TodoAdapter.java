@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.forms.MainActivity;
 import com.example.forms.R;
 import com.example.forms.models.Todo;
 
@@ -24,7 +23,7 @@ import java.util.List;
 /**
  * The adapter class for the RecyclerView, contains the data to render and update.
  */
-public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
+public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     private List<Todo> todos;
 
     public TodoAdapter(List<Todo> todos) {
@@ -60,7 +59,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
         // Get the data model based on position & make sure we have the latest data
         Todo t = todos.get(position);
-        Todo todo = MainActivity.dbHelper.getTodoById(t.getId());
+        Todo todo = new Todo(t.id);
+        todos.set(position, todo);
 
         holder.todo_title.setText(todo.getTitle());
         String priority = todo.getPriority().toString();
@@ -94,56 +94,20 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
         }
         holder.todo_due.setText(dueDateText);
 
+        // Set the todo as done or not done
         isDoneButton.setOnClickListener(v -> flipUpdateIsDone(isDoneButton, position, todo));
-
-        holder.todoListItemRoot.setOnClickListener(v -> {
-            // show dialog with its details
-            Dialog dialog = new Dialog(v.getContext());
-            dialog.setContentView(R.layout.todo_detail_dialog);
-
-            TextView title = dialog.findViewById(R.id.todoTitleDialog);
-            TextView prio = dialog.findViewById(R.id.todoPriorityDialog);
-            TextView due = dialog.findViewById(R.id.todoDueDialog);
-            TextView description = dialog.findViewById(R.id.todoDescriptionDialog);
-            Button isDone = dialog.findViewById(R.id.todoIsDoneDialog);
-            Button delete = dialog.findViewById(R.id.todoDeleteDialog);
-
-            title.setText(todo.getTitle());
-            prio.setText(todo.getPriority().toString());
-            due.setText(todo.getDateTime());
-            description.setText(todo.getDescription());
-
-            updateIsDoneButton(isDone, todo);
-            isDone.setOnClickListener(view -> flipUpdateIsDone(isDone, position, todo));
-
-            delete.setOnClickListener(view -> {
-                int amountDel = MainActivity.dbHelper.deleteTodo(todo);
-
-                if (amountDel == 0) {
-                    Toast.makeText(v.getContext(), "Failed to delete todo", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                // remove from list and notify adapter
-                todos.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, this.getItemCount());
-                Toast.makeText(v.getContext(), "Todo deleted", Toast.LENGTH_LONG).show();
-
-                dialog.dismiss();
-            });
-
-            dialog.setTitle("Todo Details");
-            dialog.show();
-
-            // set dialog width to match parent
-            Window window = dialog.getWindow();
-            window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        });
+        // Open dialog when clicking on the item with its details
+        holder.todoListItemRoot.setOnClickListener(v -> dialogContent(v, position, todo));
     }
 
     private void flipUpdateIsDone(Button isDone, int position, Todo todo) {
-        MainActivity.dbHelper.updateTodo(todo.flipDone());
+        int amountUpdated = todo.flipDone().update();
+
+        if (amountUpdated == 0) {
+            Toast.makeText(isDone.getContext(), "Failed to update todo", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         updateIsDoneButton(isDone, todo);
         notifyItemChanged(position);
     }
@@ -151,5 +115,50 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder>{
     private void updateIsDoneButton(Button isDone, Todo todo) {
         isDone.setText(todo.getDone());
         isDone.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFFF0000);
+    }
+
+    private void deleteTodo(Todo todo, int position, View view, Dialog dialog) {
+        int amountDel = todo.delete();
+
+        if (amountDel == 0) {
+            Toast.makeText(view.getContext(), "Failed to delete todo", Toast.LENGTH_LONG).show();
+            dialog.dismiss();
+            return;
+        }
+
+        todos.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, todos.size());
+        dialog.dismiss();
+    }
+
+    private void dialogContent(View v, int position, Todo todo) {
+        Dialog dialog = new Dialog(v.getContext());
+        dialog.setContentView(R.layout.todo_detail_dialog);
+
+        TextView title = dialog.findViewById(R.id.todoTitleDialog);
+        TextView prio = dialog.findViewById(R.id.todoPriorityDialog);
+        TextView due = dialog.findViewById(R.id.todoDueDialog);
+        TextView description = dialog.findViewById(R.id.todoDescriptionDialog);
+        Button isDone = dialog.findViewById(R.id.todoIsDoneDialog);
+        Button delete = dialog.findViewById(R.id.todoDeleteDialog);
+
+        title.setText(todo.getTitle());
+        prio.setText(todo.getPriority().toString());
+        due.setText(todo.getDateTime());
+        description.setText(todo.getDescription());
+
+        updateIsDoneButton(isDone, todo);
+        isDone.setOnClickListener(view -> flipUpdateIsDone(isDone, position, todo));
+
+        delete.setOnClickListener(view -> deleteTodo(todo, position, view, dialog));
+
+        dialog.setTitle("Todo Details");
+        dialog.show();
+
+        // Make the dialog full width
+        // adapted from https://stackoverflow.com/a/40718796/10463118
+        Window window = dialog.getWindow();
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
     }
 }

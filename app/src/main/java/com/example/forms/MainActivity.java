@@ -12,25 +12,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.forms.adapters.TodoAdapter;
 import com.example.forms.databinding.ActivityMainBinding;
 import com.example.forms.models.Todo;
-import com.example.forms.utils.DBHelper;
+import com.example.forms.utils.DBControl;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     RecyclerView recyclerview;
     SwipeRefreshLayout swipeRefreshLayout;
-    public static DBHelper dbHelper;
-    public static List<Todo> todos = new ArrayList<>();
-    public static final boolean DEBUG = true;
+    public static DBControl dbControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dbHelper = new DBHelper(this);
+        dbControl = new DBControl(this);
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -39,30 +34,27 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout = findViewById(R.id.swipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        refreshList();
-
         FloatingActionButton fab = binding.fab;
         // OnClick: Create new activity
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, ToDoCreateUpdate.class);
             startActivity(intent);
         });
-        // OnLongClick: Show hint and create new todos in debug mode
+        // OnLongClick: Show hint
         fab.setOnLongClickListener(view -> {
             Toast.makeText(this, "Create new todo", Toast.LENGTH_SHORT).show();
-            if(MainActivity.DEBUG) todos.addAll(Todo.createTodosList());
             refreshList();
             return true;
         });
     }
 
     private void refreshList() {
-        if (dbHelper == null) dbHelper = new DBHelper(this);
+        if (dbControl == null) {
+            Toast.makeText(this, "Could not connect to database", Toast.LENGTH_LONG).show();
+            return;
+        }
 
-        todos.clear();
-        todos = dbHelper.getAllTodos();
-
-        TodoAdapter adapter = new TodoAdapter(todos);
+        TodoAdapter adapter = new TodoAdapter(new Todo(-1).getAll());
         recyclerview.setAdapter(adapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
     }

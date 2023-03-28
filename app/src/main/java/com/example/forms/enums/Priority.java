@@ -6,6 +6,7 @@ public enum Priority {
     Low(2);
 
     private final int value;
+
     Priority(int i) {
         value = i;
     }

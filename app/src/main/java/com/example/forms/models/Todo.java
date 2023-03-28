@@ -1,67 +1,59 @@
 package com.example.forms.models;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import androidx.annotation.NonNull;
+
 import com.example.forms.enums.Priority;
-import java.util.ArrayList;
+import com.example.forms.utils.DateHelper;
+
 import java.util.Calendar;
-import java.util.List;
 
-public class Todo {
-    private int id = -1;
-    private String title = "";
-    private String description = "";
-    private Calendar dueDate = Calendar.getInstance();
-    private Priority priority = Priority.High;
-    private boolean isDone = false;
+public class Todo extends Model {
+    private String title;
+    private Calendar dueDate;
+    private String description;
+    private Priority priority;
+    private boolean isDone;
 
-    public enum Priority {
-        High(0),
-        Medium(1),
-        Low(2);
-
-        private final int value;
-        Priority(int i) {
-            value = i;
-        }
-
-        public int getValue() {
-            return value;
-        }
+    /**
+     * Creates a new Todo object with the given id.
+     * Automatically calls get() to get the data from the database.
+     */
+    public Todo(int id) {
+        this(id, "", Calendar.getInstance(), "", Priority.Low, false);
+        if (id != -1)
+            get();
     }
 
-    public Todo(String title, String description, Calendar dueDate, Priority priority, boolean isDone) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.priority = priority;
-        this.isDone = isDone;
+    /**
+     * Creates a new Todo object with the given properties.
+     * id is set to -1 initially and will be set by calling save().
+     */
+    public Todo(String title, Calendar dueDate, String description, Priority priority, boolean isDone) {
+        this(-1, title, dueDate, description, priority, isDone);
     }
 
-    public Todo(int id, String title, String description, Calendar dueDate, Priority priority, boolean isDone) {
+    /**
+     * Creates a new Todo object with the given properties.
+     *
+     * @param id          the id of the todo
+     * @param title       the title of the todo
+     * @param dueDate     the due date of the todo
+     * @param description the description of the todo
+     * @param priority    the priority of the todo
+     * @param isDone      whether the todo is done or not
+     */
+    public Todo(int id, String title, Calendar dueDate, String description, Priority priority, boolean isDone) {
+        super("todos", new String[]{"id", "title", "due", "description", "priority", "isDone"});
+
         this.id = id;
         this.title = title;
-        this.description = description;
         this.dueDate = dueDate;
+        this.description = description;
         this.priority = priority;
         this.isDone = isDone;
-    }
-
-    public static List<Todo> createTodosList() {
-        List<Todo> todos = new ArrayList<>();
-
-        Calendar date = Calendar.getInstance();
-        date.set(2022, 1, 1, 12, 0);
-        todos.add(new Todo(1, "Todo 1wertyuiopiuytrewertyuioiuytrew", "Description 1", date, Priority.High, false));
-        date = Calendar.getInstance();
-        date.set(2023, 3, 14, 23, 0);
-        todos.add(new Todo(2, "Todo 2", "Description 2", date, Priority.Medium, false));
-        date = Calendar.getInstance();
-        date.set(2023, 3, 15, 12, 0);
-        todos.add(new Todo(3, "Todo 3", "Description 3", date, Priority.Low, false));
-        date = Calendar.getInstance();
-        date.set(2024, 1, 3, 12, 0);
-        todos.add(new Todo(3, "Todo 3", "Description 3", date, Priority.Low, false));
-
-        return todos;
     }
 
     public int getId() {
@@ -82,15 +74,6 @@ public class Todo {
         return this;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public Todo setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
     public Calendar getDueDate() {
         return dueDate;
     }
@@ -101,8 +84,8 @@ public class Todo {
     }
 
     public String getDate() {
+        int month = dueDate.get(Calendar.MONTH) + 1; // months start at 0
         int day = dueDate.get(Calendar.DAY_OF_MONTH);
-        int month = dueDate.get(Calendar.MONTH) + 1;
         int year = dueDate.get(Calendar.YEAR);
 
         return String.format("%d/%d/%d", month, day, year);
@@ -117,6 +100,15 @@ public class Todo {
 
     public String getDateTime() {
         return String.format("%s %s", getDate(), getTime());
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Todo setDescription(String description) {
+        this.description = description;
+        return this;
     }
 
     public Priority getPriority() {
@@ -140,13 +132,49 @@ public class Todo {
         isDone = done;
         return this;
     }
+
     public Todo flipDone() {
         isDone = !isDone;
         return this;
     }
 
     @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("title", title);
+        values.put("due", DateHelper.stringFromCalendar(dueDate));
+        values.put("description", description);
+        values.put("priority", priority.toString());
+        values.put("isDone", isDone ? 1 : 0);
+        return values;
+    }
+
+    @Override
+    public void setValuesFromCursor(Cursor cursor) {
+        if (cursor == null) return;
+        if (cursor.getCount() == 0) return;
+        if (cursor.getColumnCount() != COLUMNS.length) return;
+        if (cursor.isAfterLast()) return;
+        if (cursor.isBeforeFirst()) cursor.moveToFirst();
+
+        id = cursor.getInt(0);
+        title = cursor.getString(1);
+        dueDate = DateHelper.calendarFromString(cursor.getString(2));
+        description = cursor.getString(3);
+        priority = Priority.valueOf(cursor.getString(4));
+        isDone = cursor.getInt(5) == 1;
+    }
+
+    @NonNull
+    @Override
+    public Todo clone() {
+        return new Todo(id, title, dueDate, description, priority, isDone);
+    }
+
+    @NonNull
+    @Override
     public String toString() {
-        return String.format("Title: '%s' Description: '%s' Due Date: '%s' Priority: '%s' isDone: '%s'", title, description.replace("\n", "\\n"), getDateTime(), priority, isDone);
+        return String.format("ID: %s Title: '%s' Due Date: '%s' Description: '%s' Priority: '%s' isDone: '%s'", id, title, getDateTime(), description.replace("\n", "\\n"), priority, isDone);
     }
 }

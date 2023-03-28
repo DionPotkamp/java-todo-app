@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 public class DateHelper {
     public static final String dateFormat = "EEE MMM dd HH:mm:ss z yyyy";
@@ -14,6 +15,7 @@ public class DateHelper {
     /**
      * Checks if a date string is valid
      * adapted from https://www.baeldung.com/java-string-valid-date
+     * @deprecated not working as intended
      */
     public static boolean isValid(String dateStr) {
         String dateRegex = "^\\d{1,2}/\\d{1,2}/\\d{4}$";
@@ -40,6 +42,7 @@ public class DateHelper {
 
         return true;
     }
+
     /**
      * Converts a date string to a Calendar object
      * adapted from https://stackoverflow.com/a/11791544/10463118
@@ -49,9 +52,9 @@ public class DateHelper {
         DateFormat simpleFormat = new SimpleDateFormat(dateFormat, locale);
 
         try {
-            cal.setTime(simpleFormat.parse(dateStr));
+            cal.setTime(Objects.requireNonNull(simpleFormat.parse(dateStr)));
         } catch (ParseException e) {
-            throw new RuntimeException("Could not parse date string: " + dateStr);
+            System.err.println("Could not parse date string: " + dateStr);
         }
 
         return cal;

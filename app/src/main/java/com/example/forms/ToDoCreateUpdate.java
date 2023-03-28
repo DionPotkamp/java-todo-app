@@ -3,6 +3,7 @@ package com.example.forms;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,10 +15,11 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.forms.enums.Priority;
 import com.example.forms.models.Todo;
-import com.example.forms.utils.DateHelper;
 
 import java.util.Calendar;
+import java.util.Objects;
 
+//public class ToDoCreateUpdate extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 public class ToDoCreateUpdate extends AppCompatActivity {
 
     // Form variables
@@ -28,13 +30,16 @@ public class ToDoCreateUpdate extends AppCompatActivity {
 
     // Calendar form variables
     Button datePicker, timePicker;
-    EditText date, time;
+    boolean dateSet, timeSet = false;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_to_do_create_update);
+
+        setTitle("Create new todo");
 
         titleText = findViewById(R.id.editTextTitle);
         isDoneSwitch = findViewById(R.id.isDoneSwitch);
@@ -48,71 +53,14 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         prioritySpinner.setSelection(0); // High priority by default
 
         saveButton = findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(v -> {
-            saveButton.setEnabled(false);
+        saveButton.setOnClickListener(v -> saveTodo());
 
-            // basic validation
-            boolean hasError = false;
-            if (titleText.getText().toString().isEmpty()) {
-                titleText.setError("Title is required");
-                saveButton.setEnabled(true);
-                hasError = true;
-            }
-            if (date.getText().toString().isEmpty()) {
-                date.setError("Date is required");
-                saveButton.setEnabled(true);
-                hasError = true;
-            } else if (!DateHelper.isValid(date.getText().toString())) {
-                date.setError("Date is invalid");
-                saveButton.setEnabled(true);
-                hasError = true;
-            } else {
-                date.setError(null);
-            }
-            if (time.getText().toString().isEmpty()) {
-                time.setError("Time is required");
-                saveButton.setEnabled(true);
-                hasError = true;
-            } else if (!DateHelper.isValid(time.getText().toString())) {
-                time.setError("Time is invalid");
-                saveButton.setEnabled(true);
-                hasError = true;
-            } else {
-                time.setError(null);
-            }
-
-            if (hasError) {
-                return;
-            }
-
-            Calendar dueDate = Calendar.getInstance();
-            dueDate.set(mYear, mMonth, mDay, mHour, mMinute);
-
-            Priority priority = Priority.valueOf(prioritySpinner.getSelectedItem().toString());
-            Todo todo = new Todo(
-                    titleText.getText().toString(),
-                    descriptionText.getText().toString(),
-                    dueDate,
-                    priority,
-                    isDoneSwitch.isChecked()
-            );
-
-            MainActivity.dbHelper.addNewTodo(todo);
-            Toast.makeText(this, "Saved: " + todo.getTitle() + ", Due at: " + todo.getDateTime() + ", with priority: " + todo.getPriority(), Toast.LENGTH_LONG).show();
-
-            // returning to main activity refreshes the list automatically (onResume)
-            finish();
-        });
-
-        findViewById(R.id.backButton)
-                .setOnClickListener(v -> finish());
+        findViewById(R.id.backButton).setOnClickListener(v -> finish());
 
         // Adapted from https://www.digitalocean.com/community/tutorials/android-date-time-picker-dialog
         // calendar date and time form items.
         datePicker = findViewById(R.id.dateButton);
         timePicker = findViewById(R.id.timeButton);
-        date = findViewById(R.id.dateText);
-        time = findViewById(R.id.timeText);
 
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
@@ -123,27 +71,74 @@ public class ToDoCreateUpdate extends AppCompatActivity {
 
         datePicker.setOnClickListener(v -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    (view, year, monthOfYear, dayOfMonth) -> {
-                        monthOfYear++;
-                        String month = monthOfYear < 10 ? "0" + monthOfYear : "" + monthOfYear;
-                        String day = dayOfMonth < 10 ? "0" + dayOfMonth : "" + dayOfMonth;
-                        String yearString = String.valueOf(year).length() == 2 ? "20" + year : "" + year;
-
-                        date.setText(day + "/" + month + "/" + yearString);
-                        mYear = year;
-                        mMonth = --monthOfYear;
-                        mDay = dayOfMonth;
-                    }, mYear, mMonth, mDay);
+                    this::onDateSetListener, mYear, mMonth, mDay);
             datePickerDialog.show();
         });
         timePicker.setOnClickListener(v -> {
             TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                    (view, hourOfDay, minute) -> {
-                        time.setText(hourOfDay + ":" + (minute < 10 ? "0" + minute : minute));
-                        mHour = hourOfDay;
-                        mMinute = minute;
-                    }, mHour, mMinute, true);
+                    this::onTimeSetListener, mHour, mMinute, true);
             timePickerDialog.show();
         });
+    }
+
+    private void onDateSetListener(View view, int year, int monthOfYear, int dayOfMonth) {
+        mYear = year;
+        mMonth = monthOfYear;
+        mDay = dayOfMonth;
+        dateSet = true;
+    }
+
+    private void onTimeSetListener(View view, int hourOfDay, int minute) {
+        mHour = hourOfDay;
+        mMinute = minute;
+        timeSet = true;
+    }
+
+    private void saveTodo() {
+        saveButton.setEnabled(false);
+
+        // basic validation
+        boolean hasError = false;
+        if (titleText.getText().toString().isEmpty()) {
+            titleText.setError("Title is required");
+            hasError = true;
+        } else {
+            titleText.setError(null);
+        }
+        if (!dateSet) {
+            datePicker.setError("Date is required");
+            hasError = true;
+        } else {
+            datePicker.setError(null);
+        }
+        if (!timeSet) {
+            timePicker.setError("Time is required");
+            hasError = true;
+        } else {
+            timePicker.setError(null);
+        }
+
+        if (hasError) {
+            saveButton.setEnabled(true);
+            return;
+        }
+
+        Calendar dueDate = Calendar.getInstance();
+        // The values are set in the date and time picker dialogs
+        dueDate.set(mYear, mMonth, mDay, mHour, mMinute);
+
+        Priority priority = Priority.valueOf(prioritySpinner.getSelectedItem().toString());
+        Todo todo = new Todo(
+                titleText.getText().toString(),
+                dueDate,
+                descriptionText.getText().toString(),
+                priority,
+                isDoneSwitch.isChecked()
+        ).save();
+
+        Toast.makeText(this, "Saved: " + todo.getTitle() + ", Due at: " + todo.getDateTime() + ", with priority: " + todo.getPriority(), Toast.LENGTH_LONG).show();
+
+        // returning to main activity refreshes the list automatically (onResume)
+        finish();
     }
 }
