@@ -2,6 +2,7 @@ package com.example.forms.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.forms.R;
+import com.example.forms.ToDoCreateUpdate;
 import com.example.forms.models.Todo;
 
 import java.util.Calendar;
@@ -98,6 +100,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         isDoneButton.setOnClickListener(v -> flipUpdateIsDone(isDoneButton, position, todo));
         // Open dialog when clicking on the item with its details
         holder.todoListItemRoot.setOnClickListener(v -> dialogContent(v, position, todo));
+        holder.todoListItemRoot.setOnLongClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), ToDoCreateUpdate.class);
+            intent.putExtra("isUpdate", true);
+            intent.putExtra("id", todo.getId());
+
+            v.getContext().startActivity(intent);
+
+            return true;
+        });
     }
 
     private void flipUpdateIsDone(Button isDone, int position, Todo todo) {

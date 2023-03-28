@@ -2,6 +2,7 @@
 
 This app allows you to Create, Read, Update, and Delete your to-do list.
 You can set a title, priority, due date & time, and description.
+Tap an item to view their details, and long-press to edit it.
 
 `MainActivity` has a `RecyclerView` ([todo_list_item](app\src\main\res\layout\todo_list_item.xml)). At the bottom of the screen, you can add a to-do item. When saved it is displayed in `MainActivity`. A dialog opens ([todo_detail_dialog](app\src\main\res\layout\todo_detail_dialog.xml)``) when clicking on a specific to-do item.
 

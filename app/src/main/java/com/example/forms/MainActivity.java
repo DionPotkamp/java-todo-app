@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         // OnClick: Create new activity
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, ToDoCreateUpdate.class);
+            intent.putExtra("isUpdate", false);
             startActivity(intent);
         });
         // OnLongClick: Show hint
