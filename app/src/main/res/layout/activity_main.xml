@@ -58,6 +58,7 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/add_todo"
-        app:backgroundTint="#B5F178"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        android:src="@android:drawable/ic_input_add"
+        android:backgroundTint="@color/color_brand"
+        app:useCompatPadding="false" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
