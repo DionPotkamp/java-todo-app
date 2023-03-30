@@ -153,6 +153,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         TextView description = dialog.findViewById(R.id.todoDescriptionDialog);
         Button isDone = dialog.findViewById(R.id.todoIsDoneDialog);
         Button delete = dialog.findViewById(R.id.todoDeleteDialog);
+        dialog.findViewById(R.id.closeButton)
+                .setOnClickListener(view -> dialog.dismiss());
 
         title.setText(todo.getTitle());
         prio.setText(todo.getPriority().toString());
