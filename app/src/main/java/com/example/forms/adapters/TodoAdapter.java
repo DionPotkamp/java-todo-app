@@ -64,11 +64,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         Todo todo = new Todo(t.id);
         todos.set(position, todo);
 
-        holder.todo_title.setText(todo.getTitle());
+        holder.title.setText(todo.getTitle());
         String priority = todo.getPriority().toString();
-        holder.todo_priority.setText(priority);
+        holder.priority.setText(priority);
 
-        Button isDoneButton = holder.todo_isDone;
+        Button isDoneButton = holder.isDone;
         isDoneButton.setText(todo.getDone());
 
         Calendar today = Calendar.getInstance();
@@ -94,13 +94,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
             dueDateText = String.format("%s @ %s", todo.getDate(), todo.getTime());
             isDoneButton.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFDD6600);
         }
-        holder.todo_due.setText(dueDateText);
+        holder.dueDate.setText(dueDateText);
 
         // Set the todo as done or not done
         isDoneButton.setOnClickListener(v -> flipUpdateIsDone(isDoneButton, position, todo));
         // Open dialog when clicking on the item with its details
-        holder.todoListItemRoot.setOnClickListener(v -> dialogContent(v, position, todo));
-        holder.todoListItemRoot.setOnLongClickListener(v -> {
+        holder.rootLayout.setOnClickListener(v -> dialogContent(v, position, todo));
+        holder.rootLayout.setOnLongClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ToDoCreateUpdate.class);
             intent.putExtra("isUpdate", true);
             intent.putExtra("id", todo.getId());
