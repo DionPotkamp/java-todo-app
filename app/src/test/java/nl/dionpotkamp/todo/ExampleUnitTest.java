@@ -1,4 +1,4 @@
-package com.example.forms;
+package nl.dionpotkamp.todo;
 
 import static org.junit.Assert.assertEquals;
 

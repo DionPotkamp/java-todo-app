@@ -1,4 +1,4 @@
-package com.example.forms.utils;
+package nl.dionpotkamp.todo.utils;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.example.forms.utils;
+package nl.dionpotkamp.todo.utils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

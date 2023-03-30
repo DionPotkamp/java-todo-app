@@ -1,4 +1,4 @@
-package com.example.forms;
+package nl.dionpotkamp.todo;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -14,8 +14,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
-import com.example.forms.enums.Priority;
-import com.example.forms.models.Todo;
+import nl.dionpotkamp.todo.enums.Priority;
+import nl.dionpotkamp.todo.models.Todo;
 
 import java.util.Calendar;
 import java.util.Objects;

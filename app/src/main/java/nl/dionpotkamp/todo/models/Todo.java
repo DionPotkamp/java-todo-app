@@ -1,12 +1,12 @@
-package com.example.forms.models;
+package nl.dionpotkamp.todo.models;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.example.forms.enums.Priority;
-import com.example.forms.utils.DateHelper;
+import nl.dionpotkamp.todo.enums.Priority;
+import nl.dionpotkamp.todo.utils.DateHelper;
 
 import java.util.Calendar;
 

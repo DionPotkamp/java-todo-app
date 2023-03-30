@@ -1,6 +1,6 @@
-package com.example.forms.models;
+package nl.dionpotkamp.todo.models;
 
-import static com.example.forms.MainActivity.dbControl;
+import static nl.dionpotkamp.todo.MainActivity.dbControl;
 
 import android.content.ContentValues;
 import android.database.Cursor;

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.forms'
+    namespace 'nl.dionpotkamp.todo'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.forms"
+        applicationId "nl.dionpotkamp.todo"
         minSdk 24
         targetSdk 33
         versionCode 1

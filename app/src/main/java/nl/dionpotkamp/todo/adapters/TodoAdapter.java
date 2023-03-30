@@ -1,4 +1,4 @@
-package com.example.forms.adapters;
+package nl.dionpotkamp.todo.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,9 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.forms.R;
-import com.example.forms.ToDoCreateUpdate;
-import com.example.forms.models.Todo;
+import nl.dionpotkamp.todo.R;
+import nl.dionpotkamp.todo.ToDoCreateUpdate;
+import nl.dionpotkamp.todo.models.Todo;
 
 import java.util.Calendar;
 import java.util.List;

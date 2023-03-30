@@ -1,4 +1,4 @@
-package com.example.forms;
+package nl.dionpotkamp.todo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.forms.adapters.TodoAdapter;
-import com.example.forms.databinding.ActivityMainBinding;
-import com.example.forms.models.Todo;
-import com.example.forms.utils.DBControl;
+import nl.dionpotkamp.todo.adapters.TodoAdapter;
+import nl.dionpotkamp.todo.databinding.ActivityMainBinding;
+import nl.dionpotkamp.todo.models.Todo;
+import nl.dionpotkamp.todo.utils.DBControl;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {

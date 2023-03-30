@@ -1,4 +1,4 @@
-package com.example.forms.enums;
+package nl.dionpotkamp.todo.enums;
 
 public enum Priority {
     High(0),
