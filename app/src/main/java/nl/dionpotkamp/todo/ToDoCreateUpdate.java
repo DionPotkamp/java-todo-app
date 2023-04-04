@@ -46,7 +46,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         int id = getIntent().getIntExtra("id", -1);
         Todo todo = isUpdate ? new Todo(id) : null;
 
-        if (isUpdate && todo.getTitle().isEmpty()) {
+        if (isUpdate && id == -1) {
             Toast.makeText(this, "Could not find todo", Toast.LENGTH_LONG).show();
             finish();
         }

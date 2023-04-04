@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,6 +34,31 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         recyclerview = findViewById(R.id.list);
         swipeRefreshLayout = findViewById(R.id.swipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                TodoAdapter adapter = (TodoAdapter) recyclerview.getAdapter();
+
+                Todo todo = adapter.getTodoAt(position);
+                if (direction == ItemTouchHelper.RIGHT) {
+                    todo.delete();
+                    adapter.deleteItem(position);
+                } else if (direction == ItemTouchHelper.LEFT) {
+                    Intent intent = new Intent(MainActivity.this, ToDoCreateUpdate.class);
+                    intent.putExtra("isUpdate", true);
+                    intent.putExtra("id", todo.getId());
+                    startActivity(intent);
+                }
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerview);
 
         FloatingActionButton fab = binding.fab;
         // OnClick: Create new activity

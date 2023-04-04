@@ -37,6 +37,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         return todos.size();
     }
 
+    // get the todo at the specified position
+    public Todo getTodoAt(int position) {
+        return todos.get(position);
+    }
+
     /**
      * The data to render and update.
      */
@@ -173,5 +178,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         // adapted from https://stackoverflow.com/a/40718796/10463118
         Window window = dialog.getWindow();
         window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    }
+
+    public void deleteItem(int position) {
+        todos.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, todos.size());
     }
 }
