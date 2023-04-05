@@ -16,8 +16,18 @@ import java.util.List;
  * @author Dion Potkamp
  */
 public abstract class Model implements Cloneable {
+    /**
+     * The table name in the database.
+     */
     public final String dbTable;
+    /**
+     * The column names in the database.
+     */
     public final String[] dbColumns;
+    /**
+     * The id of the model, the primary key in the database.
+     * -1 means the model is not saved in the database.
+     */
     public int id = -1;
 
     /**

@@ -21,6 +21,7 @@ import nl.dionpotkamp.todo.models.Todo;
 import nl.dionpotkamp.todo.utils.DBControl;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout = findViewById(R.id.swipeContainer);
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        // Add swipe to delete and update
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new UpdateDeleteSwipe(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT));
         itemTouchHelper.attachToRecyclerView(recyclerview);
 
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             intent.putExtra("isUpdate", false);
             startActivity(intent);
         });
-        // OnLongClick: Show hint
+        // OnLongClick: Show hint and refresh list
         fab.setOnLongClickListener(view -> {
             Toast.makeText(this, "Create new todo", Toast.LENGTH_SHORT).show();
             refreshList();
@@ -104,8 +106,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Todo todo = adapter.getTodoAt(position);
             if (direction == ItemTouchHelper.RIGHT) {
                 todo.delete();
-                adapter.deleteItem(position);
-                Toast.makeText(MainActivity.this, "Todo Deleted", Toast.LENGTH_SHORT).show();
+                refreshList();
+
+                Snackbar.make(recyclerview, "Todo deleted", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", v -> {
+                            todo.id = -1;
+                            todo.save();
+                            refreshList();
+                        })
+                        .show();
             } else if (direction == ItemTouchHelper.LEFT) {
                 Intent intent = new Intent(MainActivity.this, ToDoCreateUpdate.class);
                 intent.putExtra("isUpdate", true);
@@ -115,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
 
         // adapted from https://stackoverflow.com/a/33344173/10463118
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                 View itemView = viewHolder.itemView;
 
@@ -143,11 +152,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 final float alpha = 1.0f - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
                 viewHolder.itemView.setAlpha(alpha);
                 viewHolder.itemView.setTranslationX(dX);
-
             } else {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }
-
     }
 }

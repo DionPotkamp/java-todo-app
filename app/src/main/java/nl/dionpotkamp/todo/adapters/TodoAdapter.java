@@ -2,7 +2,6 @@ package nl.dionpotkamp.todo.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import nl.dionpotkamp.todo.R;
-import nl.dionpotkamp.todo.ToDoCreateUpdate;
 import nl.dionpotkamp.todo.models.Todo;
 
 import java.util.Calendar;
@@ -105,15 +103,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         isDoneButton.setOnClickListener(v -> flipUpdateIsDone(isDoneButton, position, todo));
         // Open dialog when clicking on the item with its details
         holder.rootLayout.setOnClickListener(v -> dialogContent(v, position, todo));
-        holder.rootLayout.setOnLongClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), ToDoCreateUpdate.class);
-            intent.putExtra("isUpdate", true);
-            intent.putExtra("id", todo.getId());
-
-            v.getContext().startActivity(intent);
-
-            return true;
-        });
     }
 
     private void flipUpdateIsDone(Button isDone, int position, Todo todo) {
@@ -133,21 +122,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         isDone.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFFF0000);
     }
 
-    private void deleteTodo(Todo todo, int position, View view, Dialog dialog) {
-        int amountDel = todo.delete();
-
-        if (amountDel == 0) {
-            Toast.makeText(view.getContext(), "Failed to delete todo", Toast.LENGTH_LONG).show();
-            dialog.dismiss();
-            return;
-        }
-
-        todos.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, todos.size());
-        dialog.dismiss();
-    }
-
     private void dialogContent(View v, int position, Todo todo) {
         Dialog dialog = new Dialog(v.getContext());
         dialog.setContentView(R.layout.todo_detail_dialog);
@@ -157,7 +131,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         TextView due = dialog.findViewById(R.id.todoDueDialog);
         TextView description = dialog.findViewById(R.id.todoDescriptionDialog);
         Button isDone = dialog.findViewById(R.id.todoIsDoneDialog);
-        Button delete = dialog.findViewById(R.id.todoDeleteDialog);
+
         dialog.findViewById(R.id.closeButton)
                 .setOnClickListener(view -> dialog.dismiss());
 
@@ -169,8 +143,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         updateIsDoneButton(isDone, todo);
         isDone.setOnClickListener(view -> flipUpdateIsDone(isDone, position, todo));
 
-        delete.setOnClickListener(view -> deleteTodo(todo, position, view, dialog));
-
         dialog.setTitle("Todo Details");
         dialog.show();
 
@@ -178,11 +150,5 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         // adapted from https://stackoverflow.com/a/40718796/10463118
         Window window = dialog.getWindow();
         window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-    }
-
-    public void deleteItem(int position) {
-        todos.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, todos.size());
     }
 }

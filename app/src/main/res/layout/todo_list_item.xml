@@ -3,7 +3,10 @@
     android:id="@+id/todo_list_item_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
     android:background="#FFF"
+    android:elevation="5dp"
     android:orientation="horizontal"
     android:padding="10dp">
 

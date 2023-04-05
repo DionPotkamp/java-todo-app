@@ -13,8 +13,8 @@ public class DateHelper {
     public static final Locale locale = Locale.US;
 
     /**
-     * Checks if a date string is valid
-     * adapted from https://www.baeldung.com/java-string-valid-date
+     * Checks if a date string is valid.
+     * Adapted from https://www.baeldung.com/java-string-valid-date.
      * @deprecated not working as intended
      */
     public static boolean isValid(String dateStr) {
@@ -44,8 +44,8 @@ public class DateHelper {
     }
 
     /**
-     * Converts a date string to a Calendar object
-     * adapted from https://stackoverflow.com/a/11791544/10463118
+     * Converts a date string to a Calendar object.
+     * Adapted from https://stackoverflow.com/a/11791544/10463118.
      */
     public static Calendar calendarFromString(String dateStr) {
         Calendar cal = Calendar.getInstance();
@@ -60,6 +60,12 @@ public class DateHelper {
         return cal;
     }
 
+    /**
+     * Converts a Calender object to a string.
+     *
+     * @param cal the Calendar object to convert
+     * @return the string representation of the Calendar object
+     */
     public static String stringFromCalendar(Calendar cal) {
         return new SimpleDateFormat(dateFormat, locale).format(cal.getTime());
     }

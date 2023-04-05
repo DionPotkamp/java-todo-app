@@ -124,34 +124,24 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <Button
-            android:id="@+id/todoDeleteDialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete_todo"
-            android:textAllCaps="false" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
             android:id="@+id/todoIsDoneDialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:layout_weight="1"
             android:text="@string/is_done"
             android:textAllCaps="false" />
 
         <Space
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="4" />
 
         <Button
             android:id="@+id/closeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/close"
             android:textAllCaps="false" />
     </LinearLayout>

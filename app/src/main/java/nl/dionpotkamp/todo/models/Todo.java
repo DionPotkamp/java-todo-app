@@ -95,7 +95,8 @@ public class Todo extends Model {
         int hour = dueDate.get(Calendar.HOUR_OF_DAY);
         int minute = dueDate.get(Calendar.MINUTE);
 
-        return String.format("%02d:%02d", hour, minute); // ads 0 to the left if needed
+        // Add a 0 to the left if needed
+        return String.format("%02d:%02d", hour, minute);
     }
 
     public String getDateTime() {
