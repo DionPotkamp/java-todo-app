@@ -33,7 +33,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="?attr/actionBarSize"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="false">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
@@ -46,6 +47,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="?attr/actionBarSize"
             android:clipToPadding="false"
+            android:paddingBottom="50dp"
             tools:listitem="@layout/todo_list_item" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -69,8 +71,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/color_brand"
         android:contentDescription="@string/add_todo"
         android:src="@android:drawable/ic_input_add"
-        android:backgroundTint="@color/color_brand"
         app:useCompatPadding="false" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
