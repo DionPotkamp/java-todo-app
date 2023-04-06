@@ -1,6 +1,7 @@
 package nl.dionpotkamp.todo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -17,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import nl.dionpotkamp.todo.adapters.TodoAdapter;
 import nl.dionpotkamp.todo.databinding.ActivityMainBinding;
+import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.models.Todo;
 import nl.dionpotkamp.todo.utils.DBControl;
 
@@ -59,6 +61,17 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             refreshList();
             return true;
         });
+
+        FloatingActionButton fabDate = binding.fabDate;
+        // OnClick: Sort list by dateSort
+        fabDate.setOnClickListener(view -> {
+            if (TodoAdapter.dateSort == SortDirection.ASC) {
+                TodoAdapter.dateSort = SortDirection.DESC;
+            } else {
+                TodoAdapter.dateSort = SortDirection.ASC;
+            }
+            refreshList();
+        });
     }
 
     private void refreshList() {
@@ -75,7 +88,20 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     protected void onResume() {
         super.onResume();
+
+        SharedPreferences prefs = getSharedPreferences("todo.sort", MODE_PRIVATE);
+        TodoAdapter.dateSort = SortDirection.valueOf(prefs.getString("dateSort", "ASC"));
+
         refreshList();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = getSharedPreferences("todo.sort", MODE_PRIVATE).edit();
+        editor.putString("dateSort", TodoAdapter.dateSort.name());
+        editor.apply();
     }
 
     @Override

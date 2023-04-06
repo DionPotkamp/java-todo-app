@@ -15,9 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import nl.dionpotkamp.todo.R;
+import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.models.Todo;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -25,9 +27,12 @@ import java.util.List;
  */
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     private List<Todo> todos;
+    public static SortDirection dateSort = SortDirection.ASC;
 
     public TodoAdapter(List<Todo> todos) {
         this.todos = todos;
+
+        sortByDate(dateSort);
     }
 
     @Override
@@ -120,6 +125,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     private void updateIsDoneButton(Button isDone, Todo todo) {
         isDone.setText(todo.getDone());
         isDone.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFFF0000);
+    }
+
+    public void sortByDate(SortDirection direction) {
+        Comparator<Todo> comparator = Comparator.comparing(Todo::getDueDate);
+        if (direction == SortDirection.DESC) {
+            comparator = comparator.reversed();
+        }
+        todos.sort(comparator);
+        notifyDataSetChanged();
     }
 
     private void dialogContent(View v, int position, Todo todo) {
