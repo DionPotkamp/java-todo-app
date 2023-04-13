@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             return;
         }
 
-        TodoAdapter adapter = new TodoAdapter(new Todo(-1).getAll());
+        TodoAdapter adapter = new TodoAdapter(new Todo(-1).getAll(), this);
         recyclerview.setAdapter(adapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
     }

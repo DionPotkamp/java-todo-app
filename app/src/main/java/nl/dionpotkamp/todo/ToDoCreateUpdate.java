@@ -69,6 +69,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         // Adapted from https://stackoverflow.com/questions/13377361/how-to-use-enum-values-in-a-spinner
         // values from enum are used to populate the spinner/ dropdown
         ArrayAdapter<Priority> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Priority.values());
+
         prioritySpinner.setAdapter(adapter);
         // High as default
         prioritySpinner.setSelection(isUpdate ? todo.getPriority().ordinal() : 0);

@@ -26,11 +26,13 @@ import java.util.List;
  * The adapter class for the RecyclerView, contains the data to render and update.
  */
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
-    private List<Todo> todos;
+    private final List<Todo> todos;
     public static SortDirection dateSort = SortDirection.ASC;
+    public static int GreenColor;
 
-    public TodoAdapter(List<Todo> todos) {
+    public TodoAdapter(List<Todo> todos, Context context) {
         this.todos = todos;
+        GreenColor = context.getResources().getColor(R.color.color_brand, context.getResources().newTheme());
 
         sortByDate(dateSort);
     }
@@ -91,16 +93,16 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
         if (year == todayYear && day == todayDay) {
             dueDateText = String.format("Today @ %s", todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFFF0000);
+            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
         } else if (year == todayYear && day == todayDay + 1) {
             dueDateText = String.format("Tomorrow @ %s", todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFDD6600);
+            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFDD6600);
         } else if (year < todayYear || (year == todayYear && day < todayDay)) {
             dueDateText = String.format("Overdue: %s @ %s", todo.getDate(), todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFFF0000);
+            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
         } else {
             dueDateText = String.format("%s @ %s", todo.getDate(), todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFDD6600);
+            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFDD6600);
         }
         holder.dueDate.setText(dueDateText);
 
@@ -124,7 +126,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
     private void updateIsDoneButton(Button isDone, Todo todo) {
         isDone.setText(todo.getDone());
-        isDone.setBackgroundColor(todo.isDone() ? 0xFF00FF00 : 0xFFFF0000);
+        isDone.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
     }
 
     public void sortByDate(SortDirection direction) {
