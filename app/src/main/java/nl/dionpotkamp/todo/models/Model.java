@@ -28,7 +28,14 @@ public abstract class Model implements Cloneable {
      * The id of the model, the primary key in the database.
      * -1 means the model is not saved in the database.
      */
-    public int id = -1;
+    protected int id = -1;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * @return ContentValues with all values of this model

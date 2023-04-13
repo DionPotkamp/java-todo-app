@@ -56,31 +56,12 @@ public class Todo extends Model {
         this.isDone = isDone;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Todo setId(int id) {
-        this.id = id;
-        return this;
-    }
-
     public String getTitle() {
         return title;
     }
 
-    public Todo setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
     public Calendar getDueDate() {
         return dueDate;
-    }
-
-    public Todo setDueDate(Calendar dueDate) {
-        this.dueDate = dueDate;
-        return this;
     }
 
     public String getDate() {
@@ -107,18 +88,8 @@ public class Todo extends Model {
         return description;
     }
 
-    public Todo setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
     public Priority getPriority() {
         return priority;
-    }
-
-    public Todo setPriority(Priority priority) {
-        this.priority = priority;
-        return this;
     }
 
     public String getDone() {
@@ -127,11 +98,6 @@ public class Todo extends Model {
 
     public boolean isDone() {
         return isDone;
-    }
-
-    public Todo setDone(boolean done) {
-        isDone = done;
-        return this;
     }
 
     public Todo flipDone() {

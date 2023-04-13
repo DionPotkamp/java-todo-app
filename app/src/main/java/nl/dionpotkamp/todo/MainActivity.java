@@ -49,16 +49,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         itemTouchHelper.attachToRecyclerView(recyclerview);
 
         FloatingActionButton fab = binding.fab;
-        // OnClick: Create new activity
+        // On click: create new activity
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, ToDoCreateUpdate.class);
-            intent.putExtra("isUpdate", false);
             startActivity(intent);
         });
-        // OnLongClick: Show hint and refresh list
+        // On long click: show hint
         fab.setOnLongClickListener(view -> {
-            Toast.makeText(this, "Create new todo", Toast.LENGTH_SHORT).show();
-            refreshList();
+            Toast.makeText(this, fab.getContentDescription(), Toast.LENGTH_SHORT).show();
             return true;
         });
 
@@ -77,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private void refreshList() {
         if (dbControl == null) {
             Toast.makeText(this, "Could not connect to database", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Refresh to retry", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -131,19 +130,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             Todo todo = adapter.getTodoAt(position);
             if (direction == ItemTouchHelper.RIGHT) {
-                todo.delete();
+                if (todo.delete() == 0) {
+                    Toast.makeText(MainActivity.this, "Could not delete todo", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 refreshList();
 
                 Snackbar.make(recyclerview, "Todo deleted", Snackbar.LENGTH_LONG)
                         .setAction("Undo", v -> {
-                            todo.id = -1;
+                            // todo is still stored in the variable, so we can just save it again by setting the id to -1
+                            todo.setId(-1);
                             todo.save();
                             refreshList();
                         })
                         .show();
             } else if (direction == ItemTouchHelper.LEFT) {
                 Intent intent = new Intent(MainActivity.this, ToDoCreateUpdate.class);
-                intent.putExtra("isUpdate", true);
                 intent.putExtra("id", todo.getId());
                 startActivity(intent);
             }

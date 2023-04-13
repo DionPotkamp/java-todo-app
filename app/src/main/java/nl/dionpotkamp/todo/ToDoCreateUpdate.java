@@ -34,19 +34,17 @@ public class ToDoCreateUpdate extends AppCompatActivity {
     boolean dateSet, timeSet = false;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
-    boolean isUpdate = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_to_do_create_update);
 
-        isUpdate = getIntent().getBooleanExtra("isUpdate", false);
         int id = getIntent().getIntExtra("id", -1);
+        boolean isUpdate = id != -1;
         Todo todo = isUpdate ? new Todo(id) : null;
 
-        if (isUpdate && id == -1) {
+        if (isUpdate && todo.getId() == -1) {
             Toast.makeText(this, "Could not find todo", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -76,7 +74,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
 
         saveButton = findViewById(R.id.saveButton);
         saveButton.setText(isUpdate ? "Update Todo" : "Add Todo");
-        saveButton.setOnClickListener(v -> saveTodo(isUpdate, id));
+        saveButton.setOnClickListener(v -> saveTodo(id));
 
         backButton = findViewById(R.id.backButton);
         backButton.setText(isUpdate ? "Cancel" : "Back");
@@ -129,7 +127,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         timeSet = true;
     }
 
-    private void saveTodo(boolean isUpdate, int id) {
+    private void saveTodo(int id) {
         saveButton.setEnabled(false);
 
         // basic validation

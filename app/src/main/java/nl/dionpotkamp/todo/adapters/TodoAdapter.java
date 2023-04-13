@@ -71,7 +71,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
         // Get the data model based on position & make sure we have the latest data
         Todo t = todos.get(position);
-        Todo todo = new Todo(t.id);
+        Todo todo = new Todo(t.getId());
         todos.set(position, todo);
 
         holder.title.setText(todo.getTitle());
