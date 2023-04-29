@@ -27,6 +27,6 @@ public class TodoViewHolder extends RecyclerView.ViewHolder {
         priority = itemView.findViewById(R.id.todo_priority);
         dueDate = itemView.findViewById(R.id.todo_due);
         isDone = itemView.findViewById(R.id.todo_isDone);
-        rootLayout = itemView.findViewById(R.id.todo_list_item_root);
+        rootLayout = itemView.findViewById(R.id.root_layout);
     }
 }
