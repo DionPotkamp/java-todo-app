@@ -19,7 +19,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import nl.dionpotkamp.todo.adapters.TodoAdapter;
 import nl.dionpotkamp.todo.databinding.ActivityMainBinding;
 import nl.dionpotkamp.todo.enums.SortDirection;
-import nl.dionpotkamp.todo.models.Model;
 import nl.dionpotkamp.todo.models.Todo;
 import nl.dionpotkamp.todo.utils.DBControl;
 
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     RecyclerView recyclerview;
     SwipeRefreshLayout swipeRefreshLayout;
     public static DBControl dbControl;
+    TodoAdapter todoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +64,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         FloatingActionButton fabDate = binding.fabDate;
         // OnClick: Sort list by dateSort
         fabDate.setOnClickListener(view -> {
-            if (TodoAdapter.dateSort == SortDirection.ASC) {
-                TodoAdapter.dateSort = SortDirection.DESC;
-            } else {
-                TodoAdapter.dateSort = SortDirection.ASC;
-            }
+            TodoAdapter.flipSort();
             refreshList();
         });
     }
@@ -80,8 +76,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             return;
         }
 
-        TodoAdapter adapter = new TodoAdapter(Model.getAll(Todo.class), this);
-        recyclerview.setAdapter(adapter);
+        if (todoAdapter == null)
+            todoAdapter = new TodoAdapter(this);
+        todoAdapter.loadTodos();
+        recyclerview.setAdapter(todoAdapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
     }
 

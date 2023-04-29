@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.migrations.Migration;
 
 /**
@@ -160,14 +161,14 @@ public abstract class Model implements Cloneable {
      * @param modelClass Class of model
      * @return List with all models of type E which extends Model
      */
-    public static <E extends Model> List<E> getAll(Class<E> modelClass) {
+    public static <E extends Model> List<E> getAll(Class<E> modelClass, String orderBy, SortDirection sortDirection) {
         List<E> list = new ArrayList<>();
 
         E model = createClassFromName(modelClass);
         if (model == null)
             return list;
 
-        Cursor cursor = dbControl.select(model.dbTable, model.dbColumns, null, null, null, null, null);
+        Cursor cursor = dbControl.select(model.dbTable, model.dbColumns, null, null, null, null, orderBy + " " + sortDirection.toString());
 
         while (cursor.moveToNext()) {
             E newModel = createClassFromName(modelClass);

@@ -16,31 +16,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import nl.dionpotkamp.todo.R;
 import nl.dionpotkamp.todo.enums.SortDirection;
+import nl.dionpotkamp.todo.migrations.TodoTable;
+import nl.dionpotkamp.todo.models.Model;
 import nl.dionpotkamp.todo.models.Todo;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * The adapter class for the RecyclerView, contains the data to render and update.
  */
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
-    private final List<Todo> todos;
+    private List<Todo> todos;
     public static SortDirection dateSort;
     public static int GreenColor;
 
-    public TodoAdapter(List<Todo> todos, Context context) {
-        if (todos == null)
-            this.todos = new ArrayList<>();
-        else
-            this.todos = todos;
-
-        dateSort = SortDirection.ASC;
+    public TodoAdapter(Context context) {
         GreenColor = context.getResources().getColor(R.color.color_brand, context.getTheme());
+    }
 
-        sortByDate(dateSort);
+    public void loadTodos() {
+        sortByDate();
     }
 
     @Override
@@ -133,12 +129,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         isDone.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
     }
 
-    public void sortByDate(SortDirection direction) {
-        Comparator<Todo> comparator = Comparator.comparing(Todo::getDueDate);
-        if (direction == SortDirection.DESC) {
-            comparator = comparator.reversed();
-        }
-        todos.sort(comparator);
+    public static void flipSort() {
+        dateSort = dateSort == SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
+    }
+
+    public void sortByDate() {
+        todos = Model.getAll(Todo.class, TodoTable.COLUMN_NAMES[2], dateSort);
         notifyDataSetChanged();
     }
 
