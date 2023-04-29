@@ -64,7 +64,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
             descriptionText.setText(todo.getDescription());
         }
 
-        // Adapted from https://stackoverflow.com/questions/13377361/how-to-use-enum-values-in-a-spinner
+        // Adapted from https://stackoverflow.com/a/17650125/10463118
         // values from enum are used to populate the spinner/ dropdown
         ArrayAdapter<Priority> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Priority.values());
 
@@ -102,16 +102,12 @@ public class ToDoCreateUpdate extends AppCompatActivity {
             dateSet = true;
         }
 
-        datePicker.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                    this::onDateSetListener, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        });
-        timePicker.setOnClickListener(v -> {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                    this::onTimeSetListener, mHour, mMinute, true);
-            timePickerDialog.show();
-        });
+        datePicker.setOnClickListener(v -> new DatePickerDialog(this,
+                this::onDateSetListener, mYear, mMonth, mDay
+        ).show());
+        timePicker.setOnClickListener(v -> new TimePickerDialog(this,
+                this::onTimeSetListener, mHour, mMinute, true
+        ).show());
     }
 
     private void onDateSetListener(View view, int year, int monthOfYear, int dayOfMonth) {

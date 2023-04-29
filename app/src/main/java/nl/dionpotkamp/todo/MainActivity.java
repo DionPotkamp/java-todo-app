@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import nl.dionpotkamp.todo.adapters.TodoAdapter;
 import nl.dionpotkamp.todo.databinding.ActivityMainBinding;
 import nl.dionpotkamp.todo.enums.SortDirection;
+import nl.dionpotkamp.todo.models.Model;
 import nl.dionpotkamp.todo.models.Todo;
 import nl.dionpotkamp.todo.utils.DBControl;
 
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             return;
         }
 
-        TodoAdapter adapter = new TodoAdapter(new Todo(-1).getAll(), this);
+        TodoAdapter adapter = new TodoAdapter(Model.getAll(Todo.class), this);
         recyclerview.setAdapter(adapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
             Todo todo = adapter.getTodoAt(position);
             if (direction == ItemTouchHelper.RIGHT) {
-                if (todo.delete() == 0) {
+                if (!todo.delete()) {
                     Toast.makeText(MainActivity.this, "Could not delete todo", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -138,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
                 Snackbar.make(recyclerview, "Todo deleted", Snackbar.LENGTH_LONG)
                         .setAction("Undo", v -> {
-                            // todo is still stored in the variable, so we can just save it again by setting the id to -1
-                            todo.setId(-1);
+                            // It is still stored in the variable.
+                            // We can just save it again, id is set to -1 so it will be inserted as new
                             todo.save();
                             refreshList();
                         })

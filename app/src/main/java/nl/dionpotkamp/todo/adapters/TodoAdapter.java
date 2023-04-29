@@ -18,6 +18,7 @@ import nl.dionpotkamp.todo.R;
 import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.models.Todo;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
@@ -27,12 +28,17 @@ import java.util.List;
  */
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     private final List<Todo> todos;
-    public static SortDirection dateSort = SortDirection.ASC;
+    public static SortDirection dateSort;
     public static int GreenColor;
 
     public TodoAdapter(List<Todo> todos, Context context) {
-        this.todos = todos;
-        GreenColor = context.getResources().getColor(R.color.color_brand, context.getResources().newTheme());
+        if (todos == null)
+            this.todos = new ArrayList<>();
+        else
+            this.todos = todos;
+
+        dateSort = SortDirection.ASC;
+        GreenColor = context.getResources().getColor(R.color.color_brand, context.getTheme());
 
         sortByDate(dateSort);
     }
@@ -42,7 +48,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         return todos.size();
     }
 
-    // get the todo at the specified position
     public Todo getTodoAt(int position) {
         return todos.get(position);
     }
@@ -84,6 +89,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         Calendar today = Calendar.getInstance();
         Calendar dueDate = todo.getDueDate();
         String dueDateText;
+        int backgroundColor;
 
         // Separated for readability
         int year = dueDate.get(Calendar.YEAR);
@@ -93,35 +99,33 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
         if (year == todayYear && day == todayDay) {
             dueDateText = String.format("Today @ %s", todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
+            backgroundColor = todo.isDone() ? GreenColor : 0xFFFF0000;
         } else if (year == todayYear && day == todayDay + 1) {
             dueDateText = String.format("Tomorrow @ %s", todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFDD6600);
+            backgroundColor = todo.isDone() ? GreenColor : 0xFFDD6600;
         } else if (year < todayYear || (year == todayYear && day < todayDay)) {
             dueDateText = String.format("Overdue: %s @ %s", todo.getDate(), todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
+            backgroundColor = todo.isDone() ? GreenColor : 0xFFFF0000;
         } else {
             dueDateText = String.format("%s @ %s", todo.getDate(), todo.getTime());
-            isDoneButton.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFDD6600);
+            backgroundColor = todo.isDone() ? GreenColor : 0xFFDD6600;
         }
         holder.dueDate.setText(dueDateText);
+        isDoneButton.setBackgroundColor(backgroundColor);
 
-        // Set the todo as done or not done
+        // Set as done or not done
         isDoneButton.setOnClickListener(v -> flipUpdateIsDone(isDoneButton, position, todo));
         // Open dialog when clicking on the item with its details
         holder.rootLayout.setOnClickListener(v -> dialogContent(v, position, todo));
     }
 
     private void flipUpdateIsDone(Button isDone, int position, Todo todo) {
-        int amountUpdated = todo.flipDone().update();
-
-        if (amountUpdated == 0) {
+        if (todo.flipDone().update() == 0) {
             Toast.makeText(isDone.getContext(), "Failed to update todo", Toast.LENGTH_LONG).show();
-            return;
+        } else {
+            updateIsDoneButton(isDone, todo);
+            notifyItemChanged(position);
         }
-
-        updateIsDoneButton(isDone, todo);
-        notifyItemChanged(position);
     }
 
     private void updateIsDoneButton(Button isDone, Todo todo) {
@@ -138,6 +142,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         notifyDataSetChanged();
     }
 
+    // TODO: move to separate layout file
     private void dialogContent(View v, int position, Todo todo) {
         Dialog dialog = new Dialog(v.getContext());
         dialog.setContentView(R.layout.todo_detail_dialog);

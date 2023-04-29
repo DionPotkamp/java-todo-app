@@ -6,6 +6,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 
 import nl.dionpotkamp.todo.enums.Priority;
+import nl.dionpotkamp.todo.migrations.TodoTable;
 import nl.dionpotkamp.todo.utils.DateHelper;
 
 import java.util.Calendar;
@@ -18,21 +19,21 @@ public class Todo extends Model {
     private boolean isDone;
 
     /**
-     * Creates a new Todo object with the given id.
-     * Automatically calls get() to get the data from the database.
+     * Creates a new object with -1 as id.
+     * Used for creating a new object in Model class
      */
-    public Todo(int id) {
-        this(id, "", Calendar.getInstance(), "", Priority.Low, false);
-        if (id != -1)
-            get();
+    public Todo() {
+        this(-1, null, null, null, null, false);
     }
 
     /**
-     * Creates a new Todo object with the given properties.
-     * id is set to -1 initially and will be set by calling save().
+     * Creates a new object with the given id.
+     * Automatically calls get() to get the data from the database.
      */
-    public Todo(String title, Calendar dueDate, String description, Priority priority, boolean isDone) {
-        this(-1, title, dueDate, description, priority, isDone);
+    public Todo(int id) {
+        this(id, null, null, null, null, false);
+        if (id != -1)
+            get();
     }
 
     /**
@@ -46,7 +47,7 @@ public class Todo extends Model {
      * @param isDone      whether the todo is done or not
      */
     public Todo(int id, String title, Calendar dueDate, String description, Priority priority, boolean isDone) {
-        super("todos", new String[]{"id", "title", "due", "description", "priority", "isDone"});
+        super(new TodoTable());
 
         this.id = id;
         this.title = title;

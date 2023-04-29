@@ -5,12 +5,17 @@ import static nl.dionpotkamp.todo.MainActivity.dbControl;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import nl.dionpotkamp.todo.migrations.Migration;
 
 /**
  * Model class for all models, all models must extend this class.
  * This class contains methods to get all models of a type.
+ *      For this to work, the child must have an empty constructor.
  * When implemented correctly, this class can be used to get all models of a type.
  *
  * @author Dion Potkamp
@@ -33,10 +38,6 @@ public abstract class Model implements Cloneable {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     /**
      * @return ContentValues with all values of this model
      */
@@ -52,32 +53,29 @@ public abstract class Model implements Cloneable {
     /**
      * @return Clone of this model
      */
+    @NonNull
     public abstract Model clone();
 
     /**
-     * @param table Name of table in database
-     * @param columns Names of columns in database
+     * @param migration Migration to get table and columns from
      */
-    public Model(String table, String[] columns) {
+    public Model(Migration migration) {
         // Setting table and columns could be done in constructor of child class
         // But this way it's enforced to set the table and columns
-        dbTable = table;
-        dbColumns = columns;
+        dbTable = migration.getTableName();
+        dbColumns = migration.getColumnNames();
     }
 
     /**
      * Create a new row of model in database.
      * Sets id of model to id of created row.
-     *
-     * @return id of created row
      */
-    public int create() {
-        // Remove id from values, because id is auto incremented
+    public void create() {
+        // Remove id from values, because it is auto incremented
         ContentValues values = getContentValues();
         values.remove("id");
 
         id = dbControl.insert(dbTable, values);
-        return id;
     }
 
     /**
@@ -99,11 +97,20 @@ public abstract class Model implements Cloneable {
      *
      * @return Number of deleted rows
      */
-    public int delete() {
+    public boolean delete() {
         ContentValues values = getContentValues();
         String id = values.getAsString("id");
 
-        return dbControl.delete(dbTable, "id=?", new String[]{id});
+        int amountDeleted = dbControl.delete(dbTable, "id=?", new String[]{id});
+        if (amountDeleted > 1) // Should never happen
+            System.err.printf("More than one (%d) row deleted using ID: %s", amountDeleted, id);
+
+        boolean deleted = amountDeleted > 0;
+        // Set id to -1 if model is deleted, so it can be saved again
+        if (deleted)
+            this.id = -1;
+
+        return deleted;
     }
 
     /**
@@ -113,11 +120,10 @@ public abstract class Model implements Cloneable {
      * @return Object type E which extends Model saved in database
      */
     public <E extends Model> E save() {
-        if (id == -1) {
+        if (id == -1)
             create();
-        } else {
+        else
             update();
-        }
 
         return (E) this;
     }
@@ -134,11 +140,9 @@ public abstract class Model implements Cloneable {
     }
 
     /**
-     * Get current model from database and set values of this model.
-     *
-     * @return Object type E which extends Model
+     * Get current model from database and set the values of this model.
      */
-    public <E extends Model> E get() {
+    public void get() {
         String[] selectionArgs = new String[]{String.valueOf(id)};
         Cursor cursor = dbControl.select(dbTable, dbColumns, "id=?", selectionArgs, null, null, null);
 
@@ -147,28 +151,47 @@ public abstract class Model implements Cloneable {
         }
 
         cursor.close();
-
-        return (E) this;
     }
 
     /**
      * Get all models of type E which extends Model.
      * If no records are found, an empty list will be returned.
      *
+     * @param modelClass Class of model
      * @return List with all models of type E which extends Model
      */
-    public <E extends Model> List<E> getAll() {
-        Cursor cursor = dbControl.select(dbTable, dbColumns, null, null, null, null, null);
-
+    public static <E extends Model> List<E> getAll(Class<E> modelClass) {
         List<E> list = new ArrayList<>();
 
+        E model = createClassFromName(modelClass);
+        if (model == null)
+            return list;
+
+        Cursor cursor = dbControl.select(model.dbTable, model.dbColumns, null, null, null, null, null);
+
         while (cursor.moveToNext()) {
-            this.setValuesFromCursor(cursor);
-            list.add((E) this.clone());
+            E newModel = createClassFromName(modelClass);
+            if (newModel == null)
+                continue;
+
+            newModel.setValuesFromCursor(cursor);
+            list.add(newModel);
         }
 
         cursor.close();
-
         return list;
+    }
+
+    private static <E extends Model> E createClassFromName(Class<E> modelClass) {
+        E model;
+
+        try {
+            model = modelClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            System.out.printf("Could not create new instance of model %s. %s", modelClass.getName(), e.getMessage());
+            return null;
+        }
+
+        return model;
     }
 }
