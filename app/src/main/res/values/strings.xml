@@ -24,4 +24,8 @@
     <string name="is_done">Is Done</string>
     <string name="close">Close</string>
     <string name="fab_date">Sort on Date</string>
+    <string name="title_activity_todo_create_update">Create Or Update Todo</string>
+    <string name="title_activity_todo_detail">Todo Details</string>
+    <string name="action_settings">Settings</string>
+    <string name="update_todo">Update Todo</string>
 </resources>

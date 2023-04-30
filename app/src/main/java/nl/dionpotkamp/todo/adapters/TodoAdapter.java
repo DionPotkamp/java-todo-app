@@ -2,6 +2,7 @@ package nl.dionpotkamp.todo.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import nl.dionpotkamp.todo.R;
+import nl.dionpotkamp.todo.TodoDetailActivity;
 import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.migrations.TodoTable;
 import nl.dionpotkamp.todo.models.Model;
@@ -36,7 +38,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     }
 
     public void loadTodos() {
-        sortByDate();
+        todos = Model.getAll(Todo.class, TodoTable.COLUMN_NAMES[2], dateSort);
+        notifyDataSetChanged();
+    }
+
+    public static void flipSort() {
+        dateSort = dateSort == SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
     }
 
     @Override
@@ -71,8 +78,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
         // Get the data model based on position & make sure we have the latest data
-        Todo t = todos.get(position);
-        Todo todo = new Todo(t.getId());
+        Todo _todo = todos.get(position);
+        Todo todo = new Todo(_todo.getId());
         todos.set(position, todo);
 
         holder.title.setText(todo.getTitle());
@@ -111,61 +118,22 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
         // Set as done or not done
         isDoneButton.setOnClickListener(v -> flipUpdateIsDone(isDoneButton, position, todo));
-        // Open dialog when clicking on the item with its details
-        holder.rootLayout.setOnClickListener(v -> dialogContent(v, position, todo));
+        holder.rootLayout.setOnClickListener(v -> openDetailActivity(v, todo));
     }
 
-    private void flipUpdateIsDone(Button isDone, int position, Todo todo) {
+    private void openDetailActivity(View v, Todo todo) {
+        Intent intent = new Intent(v.getContext(), TodoDetailActivity.class);
+        intent.putExtra("id", todo.getId());
+        v.getContext().startActivity(intent);
+    }
+
+    public void flipUpdateIsDone(Button isDone, int position, Todo todo) {
         if (todo.flipDone().update() == 0) {
             Toast.makeText(isDone.getContext(), "Failed to update todo", Toast.LENGTH_LONG).show();
         } else {
-            updateIsDoneButton(isDone, todo);
+            isDone.setText(todo.getDone());
+            isDone.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
             notifyItemChanged(position);
         }
-    }
-
-    private void updateIsDoneButton(Button isDone, Todo todo) {
-        isDone.setText(todo.getDone());
-        isDone.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
-    }
-
-    public static void flipSort() {
-        dateSort = dateSort == SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
-    }
-
-    public void sortByDate() {
-        todos = Model.getAll(Todo.class, TodoTable.COLUMN_NAMES[2], dateSort);
-        notifyDataSetChanged();
-    }
-
-    // TODO: move to separate layout file
-    private void dialogContent(View v, int position, Todo todo) {
-        Dialog dialog = new Dialog(v.getContext());
-        dialog.setContentView(R.layout.todo_detail_dialog);
-
-        TextView title = dialog.findViewById(R.id.todoTitleDialog);
-        TextView prio = dialog.findViewById(R.id.todoPriorityDialog);
-        TextView due = dialog.findViewById(R.id.todoDueDialog);
-        TextView description = dialog.findViewById(R.id.todoDescriptionDialog);
-        Button isDone = dialog.findViewById(R.id.todoIsDoneDialog);
-
-        dialog.findViewById(R.id.closeButton)
-                .setOnClickListener(view -> dialog.dismiss());
-
-        title.setText(todo.getTitle());
-        prio.setText(todo.getPriority().toString());
-        due.setText(todo.getDateTime());
-        description.setText(todo.getDescription());
-
-        updateIsDoneButton(isDone, todo);
-        isDone.setOnClickListener(view -> flipUpdateIsDone(isDone, position, todo));
-
-        dialog.setTitle("Todo Details");
-        dialog.show();
-
-        // Make the dialog full width
-        // adapted from https://stackoverflow.com/a/40718796/10463118
-        Window window = dialog.getWindow();
-        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
     }
 }
