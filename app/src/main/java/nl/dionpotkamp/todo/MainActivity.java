@@ -16,14 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import nl.dionpotkamp.todo.adapters.TodoAdapter;
 import nl.dionpotkamp.todo.databinding.ActivityMainBinding;
 import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.models.Todo;
 import nl.dionpotkamp.todo.utils.DBControl;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 

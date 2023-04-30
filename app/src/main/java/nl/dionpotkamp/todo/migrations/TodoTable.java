@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class TodoTable implements Migration {
     public static final String TABLE_NAME = "todos";
     public static final String[] COLUMN_NAMES = new String[]{"id", "title", "due", "description", "priority", "isDone"};
+
     @Override
     public void up(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE todos (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, due INTEGER, description TEXT, priority INTEGER, isDone INTEGER)");

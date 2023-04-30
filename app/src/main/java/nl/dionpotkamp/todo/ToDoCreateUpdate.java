@@ -14,11 +14,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
-import nl.dionpotkamp.todo.enums.Priority;
-import nl.dionpotkamp.todo.models.Todo;
-
 import java.util.Calendar;
 import java.util.Objects;
+
+import nl.dionpotkamp.todo.enums.Priority;
+import nl.dionpotkamp.todo.models.Todo;
 
 //public class ToDoCreateUpdate extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 public class ToDoCreateUpdate extends AppCompatActivity {

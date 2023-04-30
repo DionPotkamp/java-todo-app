@@ -4,23 +4,22 @@ import static nl.dionpotkamp.todo.adapters.TodoAdapter.GreenColor;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import nl.dionpotkamp.todo.databinding.ActivityTodoDetailBinding;
 import nl.dionpotkamp.todo.models.Todo;
 
 public class TodoDetailActivity extends AppCompatActivity {
     private ActivityTodoDetailBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

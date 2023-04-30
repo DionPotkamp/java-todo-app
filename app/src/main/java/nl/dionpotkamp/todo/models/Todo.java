@@ -5,11 +5,11 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+import java.util.Calendar;
+
 import nl.dionpotkamp.todo.enums.Priority;
 import nl.dionpotkamp.todo.migrations.TodoTable;
 import nl.dionpotkamp.todo.utils.DateHelper;
-
-import java.util.Calendar;
 
 public class Todo extends Model {
     private String title;

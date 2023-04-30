@@ -1,19 +1,18 @@
 package nl.dionpotkamp.todo.adapters;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Calendar;
+import java.util.List;
 
 import nl.dionpotkamp.todo.R;
 import nl.dionpotkamp.todo.TodoDetailActivity;
@@ -21,9 +20,6 @@ import nl.dionpotkamp.todo.enums.SortDirection;
 import nl.dionpotkamp.todo.migrations.TodoTable;
 import nl.dionpotkamp.todo.models.Model;
 import nl.dionpotkamp.todo.models.Todo;
-
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * The adapter class for the RecyclerView, contains the data to render and update.

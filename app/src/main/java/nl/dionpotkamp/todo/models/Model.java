@@ -16,7 +16,7 @@ import nl.dionpotkamp.todo.migrations.Migration;
 /**
  * Model class for all models, all models must extend this class.
  * This class contains methods to get all models of a type.
- *      For this to work, the child must have an empty constructor.
+ * For this to work, the child must have an empty constructor.
  * When implemented correctly, this class can be used to get all models of a type.
  *
  * @author Dion Potkamp
@@ -35,6 +35,7 @@ public abstract class Model implements Cloneable {
      * -1 means the model is not saved in the database.
      */
     protected int id = -1;
+
     public int getId() {
         return id;
     }
