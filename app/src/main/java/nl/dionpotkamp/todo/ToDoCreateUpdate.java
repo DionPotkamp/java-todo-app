@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,20 +16,19 @@ import androidx.appcompat.widget.SwitchCompat;
 import java.util.Calendar;
 import java.util.Objects;
 
+import nl.dionpotkamp.todo.databinding.ActivityToDoCreateUpdateBinding;
 import nl.dionpotkamp.todo.enums.Priority;
 import nl.dionpotkamp.todo.models.Todo;
 
-//public class ToDoCreateUpdate extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 public class ToDoCreateUpdate extends AppCompatActivity {
 
-    // Form variables
-    private Button saveButton, backButton;
+    ActivityToDoCreateUpdateBinding binding;
+
+    private Button saveButton;
     private EditText titleText, descriptionText;
-    private Spinner prioritySpinner;
     private SwitchCompat isDoneSwitch;
 
-    // Calendar form variables
-    Button datePicker, timePicker;
+    // Calendar variables
     boolean dateSet, timeSet = false;
     private int mYear, mMonth, mDay, mHour, mMinute;
 
@@ -38,7 +36,9 @@ public class ToDoCreateUpdate extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).hide();
-        setContentView(R.layout.activity_to_do_create_update);
+
+        binding = ActivityToDoCreateUpdateBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         int id = getIntent().getIntExtra("id", -1);
         boolean isUpdate = id != -1;
@@ -50,13 +50,12 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         }
 
         setTitle(isUpdate ? "Update todo" : "Create new todo");
-        TextView title = findViewById(R.id.createUpdateTitle);
+        TextView title = binding.createUpdateTitle;
         title.setText(isUpdate ? "Update todo" : "Create new todo");
 
-        titleText = findViewById(R.id.editTextTitle);
-        isDoneSwitch = findViewById(R.id.isDoneSwitch);
-        descriptionText = findViewById(R.id.editTextDescription);
-        prioritySpinner = findViewById(R.id.prioritySpinner);
+        titleText = binding.editTextTitle;
+        isDoneSwitch = binding.isDoneSwitch;
+        descriptionText = binding.editTextDescription;
 
         if (isUpdate) {
             titleText.setText(todo.getTitle());
@@ -68,23 +67,18 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         // values from enum are used to populate the spinner/ dropdown
         ArrayAdapter<Priority> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Priority.values());
 
-        prioritySpinner.setAdapter(adapter);
+        binding.prioritySpinner.setAdapter(adapter);
         // High as default
-        prioritySpinner.setSelection(isUpdate ? todo.getPriority().ordinal() : 0);
+        binding.prioritySpinner.setSelection(isUpdate ? todo.getPriority().ordinal() : 0);
 
-        saveButton = findViewById(R.id.saveButton);
-        saveButton.setText(isUpdate ? "Update Todo" : "Add Todo");
-        saveButton.setOnClickListener(v -> saveTodo(id));
+        saveButton = binding.saveButton;
+        binding.saveButton.setText(isUpdate ? "Update Todo" : "Add Todo");
+        binding.saveButton.setOnClickListener(v -> saveTodo(id));
 
-        backButton = findViewById(R.id.backButton);
-        backButton.setText(isUpdate ? "Cancel" : "Back");
-        backButton.setOnClickListener(v -> finish());
+        binding.backButton.setText(isUpdate ? "Cancel" : "Back");
+        binding.backButton.setOnClickListener(v -> finish());
 
         // Adapted from https://www.digitalocean.com/community/tutorials/android-date-time-picker-dialog
-        // calendar date and time form items.
-        datePicker = findViewById(R.id.dateButton);
-        timePicker = findViewById(R.id.timeButton);
-
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -102,12 +96,20 @@ public class ToDoCreateUpdate extends AppCompatActivity {
             dateSet = true;
         }
 
-        datePicker.setOnClickListener(v -> new DatePickerDialog(this,
-                this::onDateSetListener, mYear, mMonth, mDay
-        ).show());
-        timePicker.setOnClickListener(v -> new TimePickerDialog(this,
-                this::onTimeSetListener, mHour, mMinute, true
-        ).show());
+        binding.dateButton.setOnClickListener(v ->
+                new DatePickerDialog(
+                        this,
+                        this::onDateSetListener,
+                        mYear, mMonth, mDay
+                ).show()
+        );
+        binding.timeButton.setOnClickListener(v ->
+                new TimePickerDialog(
+                        this,
+                        this::onTimeSetListener,
+                        mHour, mMinute, true
+                ).show()
+        );
     }
 
     private void onDateSetListener(View view, int year, int monthOfYear, int dayOfMonth) {
@@ -135,16 +137,16 @@ public class ToDoCreateUpdate extends AppCompatActivity {
             titleText.setError(null);
         }
         if (!dateSet) {
-            datePicker.setError("Date is required");
+            binding.dateButton.setError("Date is required");
             hasError = true;
         } else {
-            datePicker.setError(null);
+            binding.dateButton.setError(null);
         }
         if (!timeSet) {
-            timePicker.setError("Time is required");
+            binding.timeButton.setError("Time is required");
             hasError = true;
         } else {
-            timePicker.setError(null);
+            binding.timeButton.setError(null);
         }
 
         if (hasError) {
@@ -156,7 +158,7 @@ public class ToDoCreateUpdate extends AppCompatActivity {
         // The values are set in the date and time picker dialogs
         dueDate.set(mYear, mMonth, mDay, mHour, mMinute);
 
-        Priority priority = Priority.valueOf(prioritySpinner.getSelectedItem().toString());
+        Priority priority = Priority.valueOf(binding.prioritySpinner.getSelectedItem().toString());
         Todo todo = new Todo(
                 id, // -1 if new anyway
                 titleText.getText().toString(),

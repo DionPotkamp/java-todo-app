@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import nl.dionpotkamp.todo.adapters.TodoAdapter;
@@ -27,6 +26,7 @@ import nl.dionpotkamp.todo.utils.DBControl;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
+    ActivityMainBinding binding;
     RecyclerView recyclerview;
     SwipeRefreshLayout swipeRefreshLayout;
     public static DBControl dbControl;
@@ -36,34 +36,32 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dbControl = new DBControl(this);
-
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        recyclerview = findViewById(R.id.list);
-        swipeRefreshLayout = findViewById(R.id.swipeContainer);
+        dbControl = new DBControl(this);
+
+        recyclerview = binding.list;
+        swipeRefreshLayout = binding.swipeContainer;
         swipeRefreshLayout.setOnRefreshListener(this);
 
         // Add swipe to delete and update
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new UpdateDeleteSwipe(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT));
         itemTouchHelper.attachToRecyclerView(recyclerview);
 
-        FloatingActionButton fab = binding.fab;
         // On click: create new activity
-        fab.setOnClickListener(view -> {
+        binding.fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, ToDoCreateUpdate.class);
             startActivity(intent);
         });
         // On long click: show hint
-        fab.setOnLongClickListener(view -> {
-            Toast.makeText(this, fab.getContentDescription(), Toast.LENGTH_SHORT).show();
+        binding.fab.setOnLongClickListener(view -> {
+            Toast.makeText(this, binding.fab.getContentDescription(), Toast.LENGTH_SHORT).show();
             return true;
         });
 
-        FloatingActionButton fabDate = binding.fabDate;
         // OnClick: Sort list by dateSort
-        fabDate.setOnClickListener(view -> {
+        binding.fabDate.setOnClickListener(view -> {
             TodoAdapter.flipSort();
             refreshList();
         });
@@ -78,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         if (todoAdapter == null)
             todoAdapter = new TodoAdapter(this);
+
         todoAdapter.loadTodos();
         recyclerview.setAdapter(todoAdapter);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));

@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import nl.dionpotkamp.todo.databinding.ActivityTodoDetailBinding;
+import nl.dionpotkamp.todo.databinding.ContentScrollingBinding;
 import nl.dionpotkamp.todo.models.Todo;
 
 public class TodoDetailActivity extends AppCompatActivity {
@@ -26,6 +27,7 @@ public class TodoDetailActivity extends AppCompatActivity {
 
         binding = ActivityTodoDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         // Show back button in toolbar
@@ -49,10 +51,12 @@ public class TodoDetailActivity extends AppCompatActivity {
         CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
         toolBarLayout.setTitle(todo.getTitle());
 
-        TextView priority = findViewById(R.id.detail_priority);
-        TextView due = findViewById(R.id.detail_due);
-        TextView description = findViewById(R.id.detail_description);
-        Button isDone = findViewById(R.id.detail_is_done_button);
+        ContentScrollingBinding binding = this.binding.detailContentScrolling;
+
+        TextView priority = binding.detailPriority;
+        TextView due = binding.detailDue;
+        TextView description = binding.detailDescription;
+        Button isDone = binding.detailIsDoneButton;
 
         priority.setText(todo.getPriority().toString());
         due.setText(todo.getDateTime());
