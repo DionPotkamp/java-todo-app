@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         // On click: create new activity
         binding.fab.setOnClickListener(view -> {
-            Intent intent = new Intent(this, ToDoCreateUpdate.class);
+            Intent intent = new Intent(this, TodoCreateActivity.class);
             startActivity(intent);
         });
         // On long click: show hint
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         })
                         .show();
             } else if (direction == ItemTouchHelper.LEFT) {
-                Intent intent = new Intent(MainActivity.this, ToDoCreateUpdate.class);
+                Intent intent = new Intent(MainActivity.this, TodoUpdateActivity.class);
                 intent.putExtra("id", todo.getId());
                 startActivity(intent);
             }

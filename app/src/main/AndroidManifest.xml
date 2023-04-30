@@ -17,7 +17,11 @@
             android:label="@string/title_activity_todo_detail"
             android:theme="@style/Theme.Todo.NoActionBar" />
         <activity
-            android:name=".ToDoCreateUpdate"
+            android:name=".TodoCreateActivity"
+            android:label="@string/title_activity_todo_create_update"
+            android:exported="false" />
+        <activity
+            android:name=".TodoUpdateActivity"
             android:label="@string/title_activity_todo_create_update"
             android:exported="false" />
         <activity
