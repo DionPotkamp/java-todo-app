@@ -75,7 +75,7 @@ public class TodoDetailActivity extends AppCompatActivity {
     }
 
     private void editTodo(View view, Todo todo) {
-        Intent intent = new Intent(view.getContext(), TodoCreateActivity.class);
+        Intent intent = new Intent(view.getContext(), TodoUpdateActivity.class);
         intent.putExtra("id", todo.getId());
         startActivity(intent);
     }

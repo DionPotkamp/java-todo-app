@@ -125,6 +125,7 @@ public class TodoCreateActivity extends AppCompatActivity {
 
         if (hasError) {
             saveButton.setEnabled(true);
+            Toast.makeText(this, "Please fill in or correct the required fields.", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -142,9 +143,16 @@ public class TodoCreateActivity extends AppCompatActivity {
                 isDoneSwitch.isChecked()
         ).save();
 
+        if (todo.getId() == -1) {
+            Toast.makeText(this, "Something went wrong while creating the todo, please try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Toast.makeText(this, "Saved: " + todo.getTitle() + ", Due at: " + todo.getDateTime() + ", with priority: " + todo.getPriority(), Toast.LENGTH_LONG).show();
 
-        // returning to main activity refreshes the list automatically (onResume)
-        finish();
+        // noHistory is on for this view, finish() is not needed.
+        Intent intent = new Intent(this, TodoDetailActivity.class);
+        intent.putExtra("id", todo.getId());
+        startActivity(intent);
     }
 }
