@@ -1,8 +1,8 @@
-# Dion's ToDo App
+# Dion's Todo App
 
-This app allows you to Create, Read, Update, and Delete your to-do list. You can set a title, priority, due date & time, and description. Tap an item to view their details. Swipe right on an item to delete it, it will give a snackbar with an undo button. Swipe left to open the update screen.
+This app allows you to Create, Read, Update, and Delete your todo list. You can set a title, priority, due date & time, and description. Tap an item to view its details. Swipe right on an item to delete it. It will give a snackbar with an undo button. Swipe left to open the update screen.
 
-`MainActivity` has a `RecyclerView` ([todo_list_item](app/src/main/res/layout/todo_list_item.xml)). At the bottom of the screen, you can add a to-do item. When saved it is displayed in `MainActivity`. A dialog opens ([todo_detail_dialog](app/src/main/res/layout/todo_detail_dialog.xml)) when clicking on a specific to-do item.
+`MainActivity` has a `RecyclerView` ([todo_list_item](app/src/main/res/layout/todo_list_item.xml)). A detail screen opens ([activity_todo_detail](app/src/main/res/layout/activity_todo_detail.xml)) when clicking on a specific todo item. At the screen's bottom-right is a FAB to add a todo item. And at the bottom-right is a FAB to sort the items by date.
 
 All strings and colors reside inside resource files.
 
@@ -10,4 +10,11 @@ All strings and colors reside inside resource files.
 
 `DBControl` contains methods to insert, update, delete, and select data from the database. It has the most minimal logic possible to keep it as general as possible.
 
-The `Model` class has the most specific information filled in by the extending class. And it has the **best feature**: If a model (something stored in the database) extends the class `Model` and correctly implements its abstract methods, saving and retrieving records is as easy as calling one method. `save()` (update & create), `delete()`, `get()`, and `getAll()`. And all while being fully SQL-injection save!
+The `Model` class has the most specific information filled in by the extending class. And it has the **best feature**: If a model (something stored in the database) extends the class `Model` and correctly implements its abstract methods, saving and retrieving records is as easy as calling one method. `save()` (update or create), `delete()`, `get()`, and `getAll()`. And all while being fully SQL-injection save!
+
+Every class that extends `Model` should have a Migration class. This contains the SQL to create and delete the table. Additionally, it has the table and column names. In `DBHelper`, these migrations are retrieved and used to set up the database. This way, everything is nicely separated and easily changeable.
+
+## Todo list
+- [ ] Properly implement mvvm.
+- [ ] Migrate to Kotlin.
+- [ ] Add the feature to show a notification at the set due date.
