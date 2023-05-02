@@ -28,27 +28,18 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     private List<Todo> todos;
     public static SortDirection dateSort;
     public static int GreenColor;
+    public static int RedColor;
+    public static int OrangeColor;
 
     public TodoAdapter(Context context) {
         GreenColor = context.getResources().getColor(R.color.color_brand, context.getTheme());
+        RedColor = context.getResources().getColor(R.color.color_red, context.getTheme());
+        OrangeColor = context.getResources().getColor(R.color.color_orange, context.getTheme());
     }
 
     public void loadTodos() {
         todos = Model.getAll(Todo.class, TodoTable.COLUMN_NAMES[2], dateSort);
         notifyDataSetChanged();
-    }
-
-    public static void flipSort() {
-        dateSort = dateSort == SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
-    }
-
-    @Override
-    public int getItemCount() {
-        return todos.size();
-    }
-
-    public Todo getTodoAt(int position) {
-        return todos.get(position);
     }
 
     /**
@@ -95,19 +86,22 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         int day = dueDate.get(Calendar.DAY_OF_YEAR);
         int todayYear = today.get(Calendar.YEAR);
         int todayDay = today.get(Calendar.DAY_OF_YEAR);
+        String date = todo.getDate();
+        String time = todo.getTime();
+        boolean isDone = todo.isDone();
 
         if (year == todayYear && day == todayDay) {
-            dueDateText = String.format("Today @ %s", todo.getTime());
-            backgroundColor = todo.isDone() ? GreenColor : 0xFFFF0000;
+            dueDateText = String.format("Today @ %s", time);
+            backgroundColor = isDone ? GreenColor : RedColor;
         } else if (year == todayYear && day == todayDay + 1) {
-            dueDateText = String.format("Tomorrow @ %s", todo.getTime());
-            backgroundColor = todo.isDone() ? GreenColor : 0xFFDD6600;
+            dueDateText = String.format("Tomorrow @ %s", time);
+            backgroundColor = isDone ? GreenColor : OrangeColor;
         } else if (year < todayYear || (year == todayYear && day < todayDay)) {
-            dueDateText = String.format("Overdue: %s @ %s", todo.getDate(), todo.getTime());
-            backgroundColor = todo.isDone() ? GreenColor : 0xFFFF0000;
+            dueDateText = String.format("Overdue: %s @ %s", date, time);
+            backgroundColor = isDone ? GreenColor : RedColor;
         } else {
-            dueDateText = String.format("%s @ %s", todo.getDate(), todo.getTime());
-            backgroundColor = todo.isDone() ? GreenColor : 0xFFDD6600;
+            dueDateText = String.format("%s @ %s", date, time);
+            backgroundColor = isDone ? GreenColor : OrangeColor;
         }
         holder.dueDate.setText(dueDateText);
         isDoneButton.setBackgroundColor(backgroundColor);
@@ -131,5 +125,18 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
             isDone.setBackgroundColor(todo.isDone() ? GreenColor : 0xFFFF0000);
             notifyItemChanged(position);
         }
+    }
+
+    public static void flipSort() {
+        dateSort = dateSort == SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC;
+    }
+
+    public Todo getTodoAt(int position) {
+        return todos.get(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return todos.size();
     }
 }
